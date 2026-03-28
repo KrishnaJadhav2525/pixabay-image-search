@@ -12,7 +12,7 @@ export function usePixabay() {
   const pageRef = useRef(1)
   const queryRef = useRef('')
 
-  const fetchImages = useCallback(async (query, page = 1) => {
+  const fetchImages = useCallback(async (query, page = 1, append = false) => {
     if (!API_KEY) {
       setError('Pixabay API key is missing. Add VITE_PIXABAY_API_KEY to your .env file.')
       return
@@ -25,10 +25,10 @@ export function usePixabay() {
         per_page: PER_PAGE.toString(), image_type: 'photo', safesearch: 'true',
       })
       const response = await fetch(BASE_URL + '?' + params)
-      if (!response.ok) throw new Error('Pixabay API error: ' + response.status)
+      if (!response.ok) throw new Error('Pixabay API error: ' + response.status + ' ' + response.statusText)
       const data = await response.json()
       setTotalHits(data.totalHits)
-      setImages(data.hits)
+      setImages((prev) => (append ? [...prev, ...data.hits] : data.hits))
     } catch (err) {
       setError(err.message || 'Something went wrong fetching images.')
     } finally {
@@ -41,9 +41,14 @@ export function usePixabay() {
     if (!trimmed) return
     queryRef.current = trimmed
     pageRef.current = 1
-    fetchImages(trimmed, 1)
+    fetchImages(trimmed, 1, false)
+  }, [fetchImages])
+
+  const loadMore = useCallback(() => {
+    pageRef.current += 1
+    fetchImages(queryRef.current, pageRef.current, true)
   }, [fetchImages])
 
   const hasMore = images.length < totalHits
-  return { images, loading, error, totalHits, hasMore, search }
+  return { images, loading, error, totalHits, hasMore, search, loadMore }
 }
