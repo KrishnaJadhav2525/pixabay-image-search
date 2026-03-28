@@ -26,6 +26,7 @@ function App() {
             <span className="bg-gradient-to-r from-accent-400 to-pink-500 bg-clip-text text-transparent">Pixa</span>
             <span className="text-dark-100">Search</span>
           </h1>
+          <a href="https://pixabay.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-dark-400 transition-colors hover:text-accent-400">Powered by Pixabay</a>
         </div>
       </header>
 
@@ -49,7 +50,7 @@ function App() {
       </main>
 
       <footer className="border-t border-dark-700/50 py-6 text-center text-xs text-dark-500">
-        <p>Built with React + Vite + Tailwind CSS</p>
+        <p>Built with React + Vite + Tailwind CSS &bull; <a href="https://pixabay.com/api/docs/" target="_blank" rel="noopener noreferrer" className="text-accent-400/70 hover:text-accent-400">Pixabay API</a></p>
       </footer>
 
       {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
